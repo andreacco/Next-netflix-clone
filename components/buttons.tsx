@@ -91,15 +91,15 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ movieId }) => {
 
     const { mutate: mutateFavorites } = useFavorites();
     const { data: currentUser, mutate } = useCurrentUser();
-    console.log(currentUser, "CURRENT USEEEEEEEEEEER");
-    
+    // console.log(currentUser, "CURRENT USEEEEEEEEEEER");
+
     
     const isFavorite = useMemo(() => {
-        const list = currentUser?.favoriteIds || [];
+        const list = currentUser?.data.favoriteIds || [];
         
         return list.includes(movieId)
         
-    }, [currentUser, movieId]);
+    }, [currentUser?.data, movieId]);
 
     const toggleFavorites = useCallback(async () => {
         let response; 
@@ -113,12 +113,12 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ movieId }) => {
         const updatedFavoriteIds = response?.data?.favoriteIds;
 
         mutate({
-            ...currentUser, 
+            ...currentUser?.data, 
             favoriteIds: updatedFavoriteIds,
         });
 
         mutateFavorites();
-    }, [movieId, isFavorite, currentUser, mutate, mutateFavorites])
+    }, [movieId, isFavorite, currentUser, mutateFavorites, mutate])
 
     const Icon = isFavorite ? BsCheck2 : BiPlus
 
